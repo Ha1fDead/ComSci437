@@ -1,0 +1,10 @@
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\pong_proj.exe
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\pong_proj.pdb
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\obj\x86\Debug\pong_proj.csprojResolveAssemblyReference.cache
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\obj\x86\Debug\pong_proj.exe
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\obj\x86\Debug\pong_proj.pdb
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\Game.ico
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\GameThumbnail.png
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\GameThumbnail.xnb
+\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\water_background.xnb

@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pong_proj", "pong_proj\pong_proj\pong_proj.csproj", "{218F49CC-63A1-44AC-B8D1-AA1D2C506775}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "pong_projContent", "pong_proj\pong_projContent\pong_projContent.contentproj", "{326524ED-299E-41F3-8BF2-69969494F052}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{218F49CC-63A1-44AC-B8D1-AA1D2C506775}.Debug|x86.ActiveCfg = Debug|x86
+		{218F49CC-63A1-44AC-B8D1-AA1D2C506775}.Debug|x86.Build.0 = Debug|x86
+		{218F49CC-63A1-44AC-B8D1-AA1D2C506775}.Release|x86.ActiveCfg = Release|x86
+		{218F49CC-63A1-44AC-B8D1-AA1D2C506775}.Release|x86.Build.0 = Release|x86
+		{326524ED-299E-41F3-8BF2-69969494F052}.Debug|x86.ActiveCfg = Debug|x86
+		{326524ED-299E-41F3-8BF2-69969494F052}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
