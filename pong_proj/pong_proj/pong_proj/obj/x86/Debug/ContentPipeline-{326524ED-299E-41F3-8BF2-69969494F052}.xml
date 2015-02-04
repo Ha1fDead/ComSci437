@@ -7,7 +7,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\GameThumbnail.xnb</Output>
+      <Output>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\GameThumbnail.xnb</Output>
       <Time>2015-02-03T16:04:10-06:00</Time>
     </Item>
     <Item>
@@ -16,7 +16,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\water_background.xnb</Output>
+      <Output>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\water_background.xnb</Output>
       <Time>2015-02-03T16:07:07-06:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
@@ -26,10 +26,10 @@
       <TargetProfile>Reach</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_projContent\</RootDirectory>
-      <LoggerRootDirectory>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\</LoggerRootDirectory>
-      <IntermediateDirectory>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>\\iastate.edu\cyfiles\lafferty\documents\visual studio 2012\Projects\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_projContent\</RootDirectory>
+      <LoggerRootDirectory>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_proj\</LoggerRootDirectory>
+      <IntermediateDirectory>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_proj\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>\\iastate.edu\cyfiles\lafferty\Documents\comsci437\pong_proj\pong_proj\pong_proj\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
