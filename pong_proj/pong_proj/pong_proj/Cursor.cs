@@ -18,7 +18,7 @@ namespace pong_proj
 
         public Cursor()
         {
-
+            Console.Write("Test of github sync");
         }
 
         public void Initialize(Texture2D texture, Vector2 position, int width, int height, Vector2 velocity)
