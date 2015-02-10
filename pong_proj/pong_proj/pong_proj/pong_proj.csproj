@@ -16,8 +16,10 @@
     <XnaProfile>Reach</XnaProfile>
     <XnaCrossPlatformGroupID>904970ba-6479-4683-b89a-4a504af8a800</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
-    <ApplicationIcon>Content\Game.ico</ApplicationIcon>
-    <Thumbnail>Content\GameThumbnail.png</Thumbnail>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <Thumbnail>
+    </Thumbnail>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,26 +59,25 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collidable.cs" />
-    <Compile Include="Cursor.cs" />
+    <Compile Include="Components\Component2D.cs" />
+    <Compile Include="Components\Cursor.cs" />
+    <Compile Include="Components\Player.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Pong.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Wall.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
-    <Compile Include="Interfaces\ICollidable.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Space_Pong.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Game.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\GameThumbnail.png">
-      <XnaPlatformSpecific>true</XnaPlatformSpecific>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\pong_projContent\pong_projContent.contentproj">
+      <Project>{326524ED-299E-41F3-8BF2-69969494F052}</Project>
       <Name>pong_projContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>

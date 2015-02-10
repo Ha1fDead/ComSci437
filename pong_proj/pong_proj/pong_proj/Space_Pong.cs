@@ -19,7 +19,15 @@ namespace pong_proj
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D background;
+        SpriteFont Font;
+
         List<IEntity2D> entities;
+        List<Player> players;
+        Pong pong;
+
+        //This is less than ideal. Ideally we would have world coordinates and board coordinates
+        public const int SCREEN_WIDTH = 640;
+        public const int SCREEN_HEIGHT = 480;
 
         public Space_Pong()
         {
@@ -36,11 +44,12 @@ namespace pong_proj
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            this.graphics.PreferredBackBufferWidth = 640;
-            this.graphics.PreferredBackBufferHeight = 480;
+            this.graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
+            this.graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             this.graphics.ApplyChanges();
 
             entities = new List<IEntity2D>();
+            players = new List<Player>();
 
             base.Initialize();
         }
@@ -55,15 +64,30 @@ namespace pong_proj
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
             background = this.Content.Load<Texture2D>("water_background");
 
-            Vector2 player1pos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+            Font = Content.Load<SpriteFont>("Courier New");
+
+            var default_texture = this.Content.Load<Texture2D>("GameThumbnail");
+
+            Vector2 player1pos = new Vector2(0, 0);
+            Vector2 player2pos = new Vector2(SCREEN_WIDTH - default_texture.Width, 0);
 
             var player1 = new Player(PlayerIndex.One);
-            player1.Initialize(this.Content.Load<Texture2D>("GameThumbnail"), player1pos, 10, 10, new Vector2(3f, 3f));
-
+            player1.Initialize(this.Content.Load<Texture2D>("wall"), player1pos, new Vector2(0f, 0f), true);
             entities.Add(player1);
+            players.Add(player1);
+
+            var player2 = new Player(PlayerIndex.Two);
+            player2.Initialize(this.Content.Load<Texture2D>("wall"), player2pos, new Vector2(0f, 0f), true);
+            entities.Add(player2);
+            players.Add(player2);
+
+            var pong = new Pong();
+            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(2f, 2f), true);
+
+            entities.Add(pong);
 
             var cursor = new Cursor();
-            cursor.Initialize(this.Content.Load<Texture2D>("GameThumbnail"), player1pos, 0, 0, new Vector2());
+            cursor.Initialize(default_texture, player1pos, new Vector2(), false);
             entities.Add(cursor);
         }
 
@@ -73,7 +97,8 @@ namespace pong_proj
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            entities.Clear();
+            Content.Unload();
         }
 
         /// <summary>
@@ -96,8 +121,23 @@ namespace pong_proj
 
             foreach (var entity in entities)
             {
-                entity.Update(gameTime);
+                //this is REALLY, REALLY DIRTY!!!!
+                    //but I'm lazy
+                var entityProjectedCoords = entity.GetProjectedCoordinates();
 
+                foreach (var nearbyEntity in getNearbyObjects(entity))
+                {
+                    var nearbyProjectedCoords = nearbyEntity.GetProjectedCoordinates();
+
+                    if (entity != nearbyEntity && entity.Collides(nearbyProjectedCoords))
+                    {
+                        entity.Collide(nearbyProjectedCoords);
+                        nearbyEntity.Collide(entityProjectedCoords);
+                        entityProjectedCoords = entity.GetProjectedCoordinates();
+                    }
+                }
+
+                entity.Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -110,18 +150,37 @@ namespace pong_proj
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
             this.spriteBatch.Begin();
 
+            //draw background
             this.spriteBatch.Draw(background, new Rectangle(0, 0, 640, 480), Color.White);
+
+            //run through every entity and draw them
             foreach (var entity in this.entities)
             {
                 entity.Draw(spriteBatch);
             }
+
+            foreach(var player in players)
+            {
+                string score = player.Score.ToString();
+                spriteBatch.DrawString(Font, score, new Vector2(player.Position.X + 30, player.Position.Y + 40), Color.LightGreen,
+                    0, (Font.MeasureString(score) / 2), 1.0f, SpriteEffects.None, 0.5f);
+            }
+
             this.spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        /// Will eventually be a speedup of the current N^2 solution
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private List<IEntity2D> getNearbyObjects(IEntity2D obj)
+        {
+            return entities;
         }
     }
 }
