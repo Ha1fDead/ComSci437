@@ -15,7 +15,7 @@ namespace pong_proj
 
         }
 
-        public override void Collide(Rectangle entityBounds)
+        public override void Collide(Rectangle entityBounds, IEntity2D entity)
         {
             //do nothing
         }

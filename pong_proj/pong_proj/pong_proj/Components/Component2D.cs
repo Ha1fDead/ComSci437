@@ -13,13 +13,39 @@ namespace pong_proj
     /// </summary>
     abstract class Component2D : IEntity2D
     {
+        /// <summary>
+        /// The texture of the component. Is used to calculate width/height (so the physics match the image)
+        /// </summary>
         protected Texture2D EntityTexture;
+
+        /// <summary>
+        /// The position of the component, in local coordinates
+        /// </summary>
         public Vector2 Position;
+
+        /// <summary>
+        /// The width of the entity, measured from the topleft corner to the topright corner, in local coordinates
+        /// </summary>
         protected int width;
+
+        /// <summary>
+        /// The height of the entity, measured from the topleft corner to the bottemleft, in local coordinates
+        /// </summary>
         protected int height;
+
+        /// <summary>
+        /// The velocity in terms of units per second
+        /// </summary>
         public Vector2 Velocity;
+
+        /// <summary>
+        /// True if the object has collision
+        /// </summary>
         public bool collidable;
 
+        /// <summary>
+        /// The bounding box, calculated from the position, width, and height
+        /// </summary>
         public Rectangle BoundingBox
         {
             get
@@ -28,11 +54,21 @@ namespace pong_proj
             }
         }
 
+        /// <summary>
+        /// Method inherited from XNA. Currently do not use?
+        /// </summary>
         public void Initialize()
         {
-            throw new NotImplementedException();
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="velocity"></param>
+        /// <param name="collidable"></param>
         public void Initialize(Texture2D texture, Vector2 position, Vector2 velocity, bool collidable)
         {
             this.Position = position;
@@ -41,23 +77,39 @@ namespace pong_proj
             this.height = this.EntityTexture.Height;
             this.Velocity = velocity;
             this.collidable = collidable;
+            this.Initialize();
         }
 
+        /// <summary>
+        /// Gets the projected coordinates, in local coordinates, of where this will be in the absolute second
+        /// </summary>
+        /// <returns></returns>
         public Rectangle GetProjectedCoordinates()
         {
             Rectangle rect = new Rectangle( (int) (this.Position.X+this.Velocity.X), (int) (this.Position.Y+this.Velocity.Y), width, height);
             return rect;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draws the image with the texture and the position
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(EntityTexture, Position, Color.White);
+            spriteBatch.Draw(EntityTexture, transformToWorld(this.Position), Color.White);
         }
 
+        /// <summary>
+        /// Determines if the objects collide
+        /// 
+        /// If collidable is false, returns false always
+        /// </summary>
+        /// <param name="bounds">The bounds of the colliding object</param>
+        /// <returns></returns>
         public bool Collides(Rectangle bounds)
         {
             //occasionally this will cause clipping, however this is preferably to objects getting "stuck" together
-            if (this.GetProjectedCoordinates().Intersects(bounds))
+            if (this.collidable && this.GetProjectedCoordinates().Intersects(bounds))
             {
                 return true;
             }
@@ -67,8 +119,24 @@ namespace pong_proj
             }
         }
 
-        public abstract void Collide(Rectangle entityBounds);
+        protected Vector2 transformToWorld(Vector2 localCoords)
+        {
+            return new Vector2(localCoords.X, localCoords.Y);
+        }
 
+        /// <summary>
+        /// Abstract method that executes when two components collide
+        /// </summary>
+        /// <param name="entityBounds"></param>
+        /// <param name="entity"></param>
+        public abstract void Collide(Rectangle entityBounds, IEntity2D entity);
+
+        /// <summary>
+        /// Abstract method that executes when the components need to update.
+        /// 
+        /// Will update positions and any other data the implementing classes might need.
+        /// </summary>
+        /// <param name="gameTime">The gameTime since the last update</param>
         public abstract void Update(GameTime gameTime);
     }
 }

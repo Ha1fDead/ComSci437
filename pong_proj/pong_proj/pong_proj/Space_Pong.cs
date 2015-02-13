@@ -28,6 +28,9 @@ namespace pong_proj
         //This is less than ideal. Ideally we would have world coordinates and board coordinates
         public const int SCREEN_WIDTH = 640;
         public const int SCREEN_HEIGHT = 480;
+        public const int GAME_WIDTH_UNITS = 640;
+        public const int GAME_HEIGHT_UNITS = 480;
+        public const int GAME_LENGTH = 7;
 
         public Space_Pong()
         {
@@ -71,18 +74,18 @@ namespace pong_proj
             Vector2 player1pos = new Vector2(0, 0);
             Vector2 player2pos = new Vector2(SCREEN_WIDTH - default_texture.Width, 0);
 
-            var player1 = new Player(PlayerIndex.One);
+            var player1 = new Player(PlayerIndex.One, Font);
             player1.Initialize(this.Content.Load<Texture2D>("wall"), player1pos, new Vector2(0f, 0f), true);
             entities.Add(player1);
             players.Add(player1);
 
-            var player2 = new Player(PlayerIndex.Two);
+            var player2 = new Player(PlayerIndex.Two, Font);
             player2.Initialize(this.Content.Load<Texture2D>("wall"), player2pos, new Vector2(0f, 0f), true);
             entities.Add(player2);
             players.Add(player2);
 
-            var pong = new Pong();
-            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(2f, 2f), true);
+            pong = new Pong(background.Bounds);
+            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(10f, 10f), true);
 
             entities.Add(pong);
 
@@ -131,8 +134,8 @@ namespace pong_proj
 
                     if (entity != nearbyEntity && entity.Collides(nearbyProjectedCoords))
                     {
-                        entity.Collide(nearbyProjectedCoords);
-                        nearbyEntity.Collide(entityProjectedCoords);
+                        entity.Collide(nearbyProjectedCoords, nearbyEntity);
+                        nearbyEntity.Collide(entityProjectedCoords, nearbyEntity);
                         entityProjectedCoords = entity.GetProjectedCoordinates();
                     }
                 }
@@ -163,9 +166,10 @@ namespace pong_proj
 
             foreach(var player in players)
             {
-                string score = player.Score.ToString();
-                spriteBatch.DrawString(Font, score, new Vector2(player.Position.X + 30, player.Position.Y + 40), Color.LightGreen,
-                    0, (Font.MeasureString(score) / 2), 1.0f, SpriteEffects.None, 0.5f);
+                if(player.Score == 7)
+                {
+
+                }
             }
 
             this.spriteBatch.End();

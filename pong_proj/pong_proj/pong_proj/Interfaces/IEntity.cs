@@ -28,6 +28,6 @@ namespace pong_proj
 
         bool Collides(Rectangle bounds);
 
-        void Collide(Rectangle entityBounds);
+        void Collide(Rectangle entityBounds, IEntity2D entity);
     }
 }
