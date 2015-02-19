@@ -24,10 +24,10 @@ namespace pong_proj
 
         void Draw(SpriteBatch spriteBatch);
 
-        Rectangle GetProjectedCoordinates();
+        Rectangle GetProjectedCoordinates(GameTime gameTime);
 
-        bool Collides(Rectangle bounds);
+        bool Collides(GameTime gameTime, Rectangle bounds);
 
-        void Collide(Rectangle entityBounds, IEntity2D entity);
+        void Collide(GameTime gameTime, Rectangle entityBounds, IEntity2D entity);
     }
 }

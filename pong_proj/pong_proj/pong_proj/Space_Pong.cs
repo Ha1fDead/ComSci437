@@ -70,22 +70,32 @@ namespace pong_proj
             Font = Content.Load<SpriteFont>("Courier New");
 
             var default_texture = this.Content.Load<Texture2D>("GameThumbnail");
+            var horizontalTexture = this.Content.Load<Texture2D>("horizontal_wall");
+            var playerTexture = this.Content.Load<Texture2D>("paddle_green");
 
-            Vector2 player1pos = new Vector2(0, 0);
-            Vector2 player2pos = new Vector2(SCREEN_WIDTH - default_texture.Width, 0);
+            Vector2 player1pos = new Vector2(playerTexture.Width*2, horizontalTexture.Height);
+            Vector2 player2pos = new Vector2(SCREEN_WIDTH - (playerTexture.Width*3), horizontalTexture.Height);
 
             var player1 = new Player(PlayerIndex.One, Font);
-            player1.Initialize(this.Content.Load<Texture2D>("wall"), player1pos, new Vector2(0f, 0f), true);
+            player1.Initialize(playerTexture, player1pos, new Vector2(0f, 0f), true);
             entities.Add(player1);
             players.Add(player1);
 
             var player2 = new Player(PlayerIndex.Two, Font);
-            player2.Initialize(this.Content.Load<Texture2D>("wall"), player2pos, new Vector2(0f, 0f), true);
+            player2.Initialize(playerTexture, player2pos, new Vector2(0f, 0f), true);
             entities.Add(player2);
             players.Add(player2);
 
+            var bottomWall = new Wall();
+            bottomWall.Initialize(horizontalTexture, new Vector2(0, 0), new Vector2(0f, 0f), true);
+            entities.Add(bottomWall);
+
+            var topWall = new Wall();
+            topWall.Initialize(horizontalTexture, new Vector2(0, SCREEN_HEIGHT - horizontalTexture.Height), new Vector2(0f, 0f), true);
+            entities.Add(topWall);
+
             pong = new Pong(background.Bounds);
-            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(10f, 10f), true);
+            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(40f, 40f), true);
 
             entities.Add(pong);
 
@@ -125,18 +135,18 @@ namespace pong_proj
             foreach (var entity in entities)
             {
                 //this is REALLY, REALLY DIRTY!!!!
-                    //but I'm lazy
-                var entityProjectedCoords = entity.GetProjectedCoordinates();
+                    //but I'm lazy, and my 2d physics engine is sufficient for this complex of a game
+                var entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
 
                 foreach (var nearbyEntity in getNearbyObjects(entity))
                 {
-                    var nearbyProjectedCoords = nearbyEntity.GetProjectedCoordinates();
+                    var nearbyProjectedCoords = nearbyEntity.GetProjectedCoordinates(gameTime);
 
-                    if (entity != nearbyEntity && entity.Collides(nearbyProjectedCoords))
+                    if (entity != nearbyEntity && entity.Collides(gameTime, nearbyProjectedCoords))
                     {
-                        entity.Collide(nearbyProjectedCoords, nearbyEntity);
-                        nearbyEntity.Collide(entityProjectedCoords, nearbyEntity);
-                        entityProjectedCoords = entity.GetProjectedCoordinates();
+                        entity.Collide(gameTime, nearbyProjectedCoords, nearbyEntity);
+                        nearbyEntity.Collide(gameTime, entityProjectedCoords, nearbyEntity);
+                        entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
                     }
                 }
 
@@ -168,7 +178,7 @@ namespace pong_proj
             {
                 if(player.Score == 7)
                 {
-
+                    this.Exit();
                 }
             }
 

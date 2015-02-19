@@ -13,7 +13,7 @@ namespace pong_proj
 
         }
 
-        public override void Collide(Rectangle entityBounds, IEntity2D entity)
+        public override void Collide(GameTime gameTime, Rectangle entityBounds, IEntity2D entity)
         {
             
         }

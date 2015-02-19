@@ -63,7 +63,9 @@ namespace pong_proj
         }
 
         /// <summary>
+        /// Initializes the component with the given variables.
         /// 
+        /// Width and height are initialized to the texture's width and height.
         /// </summary>
         /// <param name="texture"></param>
         /// <param name="position"></param>
@@ -84,9 +86,9 @@ namespace pong_proj
         /// Gets the projected coordinates, in local coordinates, of where this will be in the absolute second
         /// </summary>
         /// <returns></returns>
-        public Rectangle GetProjectedCoordinates()
+        public Rectangle GetProjectedCoordinates(GameTime gameTime)
         {
-            Rectangle rect = new Rectangle( (int) (this.Position.X+this.Velocity.X), (int) (this.Position.Y+this.Velocity.Y), width, height);
+            Rectangle rect = new Rectangle( (int) (this.Position.X+(this.Velocity.X * gameTime.ElapsedGameTime.TotalSeconds)), (int) (this.Position.Y+(this.Velocity.Y * gameTime.ElapsedGameTime.TotalSeconds)), width, height);
             return rect;
         }
 
@@ -106,10 +108,10 @@ namespace pong_proj
         /// </summary>
         /// <param name="bounds">The bounds of the colliding object</param>
         /// <returns></returns>
-        public bool Collides(Rectangle bounds)
+        public bool Collides(GameTime gameTime, Rectangle bounds)
         {
             //occasionally this will cause clipping, however this is preferably to objects getting "stuck" together
-            if (this.collidable && this.GetProjectedCoordinates().Intersects(bounds))
+            if (this.collidable && this.GetProjectedCoordinates(gameTime).Intersects(bounds))
             {
                 return true;
             }
@@ -119,6 +121,11 @@ namespace pong_proj
             }
         }
 
+        /// <summary>
+        /// A method that transforms local coordinates into screen coordinates
+        /// </summary>
+        /// <param name="localCoords"></param>
+        /// <returns></returns>
         protected Vector2 transformToWorld(Vector2 localCoords)
         {
             return new Vector2(localCoords.X, localCoords.Y);
@@ -129,7 +136,7 @@ namespace pong_proj
         /// </summary>
         /// <param name="entityBounds"></param>
         /// <param name="entity"></param>
-        public abstract void Collide(Rectangle entityBounds, IEntity2D entity);
+        public abstract void Collide(GameTime gameTime, Rectangle entityBounds, IEntity2D entity);
 
         /// <summary>
         /// Abstract method that executes when the components need to update.
