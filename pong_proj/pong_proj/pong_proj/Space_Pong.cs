@@ -46,7 +46,6 @@ namespace pong_proj
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             this.graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
             this.graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
             this.graphics.ApplyChanges();
@@ -95,7 +94,19 @@ namespace pong_proj
             entities.Add(topWall);
 
             pong = new Pong(background.Bounds);
-            pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(40f, 40f), true);
+
+            Random ran = new Random();
+            int randomIndex = ran.Next(players.Count);
+            if(randomIndex == 0)
+            {
+                pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(40f, 40f), true);
+            }
+            else
+            {
+                pong.Initialize(this.Content.Load<Texture2D>("RubberBall"), new Vector2(150, 150), new Vector2(-40f, -40f), true);
+            }
+
+            pong.SetLastHitBy(players.ElementAt(randomIndex));
 
             entities.Add(pong);
 

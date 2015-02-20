@@ -77,10 +77,12 @@ namespace pong_proj
         public void Initialize(Texture2D texture, Vector2 position, Vector2 velocity, bool collidable)
         {
             this._position = position;
+            this._initPosition = this._position;
             this._entityTexture = texture;
             this._width = this._entityTexture.Width;
             this._height = this._entityTexture.Height;
             this._velocity = velocity;
+            this._initVelocity = this._velocity;
             this.collidable = collidable;
             this.Initialize();
         }
