@@ -16,27 +16,30 @@ namespace pong_proj
         /// <summary>
         /// The texture of the component. Is used to calculate width/height (so the physics match the image)
         /// </summary>
-        protected Texture2D EntityTexture;
-
-        /// <summary>
-        /// The position of the component, in local coordinates
-        /// </summary>
-        public Vector2 Position;
+        protected Texture2D _entityTexture;
 
         /// <summary>
         /// The width of the entity, measured from the topleft corner to the topright corner, in local coordinates
         /// </summary>
-        protected int width;
+        protected int _width;
 
         /// <summary>
         /// The height of the entity, measured from the topleft corner to the bottemleft, in local coordinates
         /// </summary>
-        protected int height;
+        protected int _height;
+
+        /// <summary>
+        /// The position of the component, in local coordinates
+        /// </summary>
+        protected Vector2 _position;
+        protected Vector2 _initPosition;
+
 
         /// <summary>
         /// The velocity in terms of units per second
         /// </summary>
-        public Vector2 Velocity;
+        protected Vector2 _velocity;
+        protected Vector2 _initVelocity;
 
         /// <summary>
         /// True if the object has collision
@@ -50,7 +53,7 @@ namespace pong_proj
         {
             get
             {
-                return new Rectangle((int) Position.X, (int) Position.Y, width, height);
+                return new Rectangle((int) _position.X, (int) _position.Y, _width, _height);
             }
         }
 
@@ -73,11 +76,11 @@ namespace pong_proj
         /// <param name="collidable"></param>
         public void Initialize(Texture2D texture, Vector2 position, Vector2 velocity, bool collidable)
         {
-            this.Position = position;
-            this.EntityTexture = texture;
-            this.width = this.EntityTexture.Width;
-            this.height = this.EntityTexture.Height;
-            this.Velocity = velocity;
+            this._position = position;
+            this._entityTexture = texture;
+            this._width = this._entityTexture.Width;
+            this._height = this._entityTexture.Height;
+            this._velocity = velocity;
             this.collidable = collidable;
             this.Initialize();
         }
@@ -88,7 +91,7 @@ namespace pong_proj
         /// <returns></returns>
         public Rectangle GetProjectedCoordinates(GameTime gameTime)
         {
-            Rectangle rect = new Rectangle( (int) (this.Position.X+(this.Velocity.X * gameTime.ElapsedGameTime.TotalSeconds)), (int) (this.Position.Y+(this.Velocity.Y * gameTime.ElapsedGameTime.TotalSeconds)), width, height);
+            Rectangle rect = new Rectangle( (int) (this._position.X+(this._velocity.X * gameTime.ElapsedGameTime.TotalSeconds)), (int) (this._position.Y+(this._velocity.Y * gameTime.ElapsedGameTime.TotalSeconds)), _width, _height);
             return rect;
         }
 
@@ -98,7 +101,7 @@ namespace pong_proj
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(EntityTexture, transformToWorld(this.Position), Color.White);
+            spriteBatch.Draw(_entityTexture, transformToWorld(this._position), Color.White);
         }
 
         /// <summary>
@@ -119,6 +122,15 @@ namespace pong_proj
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Resets the given component to it's base state
+        /// </summary>
+        public virtual void Reset()
+        {
+            this._position = _initPosition;
+            this._velocity = _initVelocity;
         }
 
         /// <summary>

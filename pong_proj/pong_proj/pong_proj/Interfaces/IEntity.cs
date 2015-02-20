@@ -29,5 +29,7 @@ namespace pong_proj
         bool Collides(GameTime gameTime, Rectangle bounds);
 
         void Collide(GameTime gameTime, Rectangle entityBounds, IEntity2D entity);
+
+        void Reset();
     }
 }

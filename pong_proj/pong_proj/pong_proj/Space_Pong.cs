@@ -178,7 +178,10 @@ namespace pong_proj
             {
                 if(player.Score == 7)
                 {
-                    this.Exit();
+                    foreach(var component in entities)
+                    {
+                        component.Reset();
+                    }
                 }
             }
 

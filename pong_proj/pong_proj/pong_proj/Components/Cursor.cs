@@ -22,7 +22,7 @@ namespace pong_proj
 
         public override void Update(GameTime gameTime)
         {
-            Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+            _position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
     }
 }
