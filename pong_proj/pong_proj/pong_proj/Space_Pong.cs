@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using pong_proj.Screens;
 
 namespace pong_proj
 {
@@ -17,6 +18,7 @@ namespace pong_proj
     public class Space_Pong : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
+        GameStateManager state;
         SpriteBatch spriteBatch;
         Texture2D background;
         SpriteFont Font;
@@ -52,6 +54,7 @@ namespace pong_proj
 
             entities = new List<IEntity2D>();
             players = new List<Player>();
+            state = new GameStateManager();
 
             base.Initialize();
         }
@@ -93,7 +96,7 @@ namespace pong_proj
             topWall.Initialize(horizontalTexture, new Vector2(0, SCREEN_HEIGHT - horizontalTexture.Height), new Vector2(0f, 0f), true);
             entities.Add(topWall);
 
-            pong = new Pong(background.Bounds);
+            pong = new Pong(background.Bounds, state);
 
             Random ran = new Random();
             int randomIndex = ran.Next(players.Count);
@@ -138,30 +141,40 @@ namespace pong_proj
                 this.Exit();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 this.Exit();
             }
 
-            foreach (var entity in entities)
+            state.Update(gameTime);
+
+            //Bad design, use OOD / Microsoft's GameStateManager code (which is awesome and well thought-out)
+            switch (state.currentState)
             {
-                //this is REALLY, REALLY DIRTY!!!!
-                    //but I'm lazy, and my 2d physics engine is sufficient for this complex of a game
-                var entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
-
-                foreach (var nearbyEntity in getNearbyObjects(entity))
-                {
-                    var nearbyProjectedCoords = nearbyEntity.GetProjectedCoordinates(gameTime);
-
-                    if (entity != nearbyEntity && entity.Collides(gameTime, nearbyProjectedCoords))
+                case GameStateManager.GameState.Title:
+                    if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed)
                     {
-                        entity.Collide(gameTime, nearbyProjectedCoords, nearbyEntity);
-                        nearbyEntity.Collide(gameTime, entityProjectedCoords, nearbyEntity);
-                        entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
+                        state.Transition(GameStateManager.GameState.Playing);
                     }
-                }
+                    break;
 
-                entity.Update(gameTime);
+                case GameStateManager.GameState.Playing:
+                    UpdatePhysics(gameTime);
+                    break;
+
+                case GameStateManager.GameState.Score:
+                    //update players, nothing else
+                    foreach(var player in players)
+                    {
+                        player.Update(gameTime);
+                    }
+                    break;
+
+                case GameStateManager.GameState.Victory:
+                    break;
+
+                default:
+                    break;
             }
 
             base.Update(gameTime);
@@ -178,27 +191,51 @@ namespace pong_proj
 
             //draw background
             this.spriteBatch.Draw(background, new Rectangle(0, 0, 640, 480), Color.White);
+            bool drawEntities = false;
 
-            //run through every entity and draw them
-            foreach (var entity in this.entities)
+
+            switch (state.currentState)
             {
-                entity.Draw(spriteBatch);
+                case GameStateManager.GameState.Title:
+                    break;
+
+                case GameStateManager.GameState.Playing:
+                    drawEntities = true;
+                    break;
+
+                case GameStateManager.GameState.Score:
+                    drawEntities = true;
+                    break;
+
+                case GameStateManager.GameState.Victory:
+                    break;
+
+                default:
+                    break;
             }
 
-            foreach(var player in players)
+            if(drawEntities)
             {
-                if(player.Score == 7)
+                foreach (var entity in this.entities)
                 {
-                    foreach(var component in entities)
+                    entity.Draw(spriteBatch);
+                }
+
+                foreach (var player in players)
+                {
+                    if (player.Score == 7)
                     {
-                        component.Reset();
+                        foreach (var component in entities)
+                        {
+                            component.Reset();
+                        }
                     }
                 }
             }
 
-            this.spriteBatch.End();
-
             base.Draw(gameTime);
+
+            this.spriteBatch.End();
         }
 
         /// <summary>
@@ -209,6 +246,30 @@ namespace pong_proj
         private List<IEntity2D> getNearbyObjects(IEntity2D obj)
         {
             return entities;
+        }
+
+        private void UpdatePhysics(GameTime gameTime)
+        {
+            foreach (var entity in entities)
+            {
+                //this is REALLY, REALLY DIRTY!!!!
+                //but I'm lazy, and my 2d physics engine is sufficient for this complex of a game
+                var entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
+
+                foreach (var nearbyEntity in getNearbyObjects(entity))
+                {
+                    var nearbyProjectedCoords = nearbyEntity.GetProjectedCoordinates(gameTime);
+
+                    if (entity != nearbyEntity && entity.Collides(gameTime, nearbyProjectedCoords))
+                    {
+                        entity.Collide(gameTime, nearbyProjectedCoords, nearbyEntity);
+                        nearbyEntity.Collide(gameTime, entityProjectedCoords, nearbyEntity);
+                        entityProjectedCoords = entity.GetProjectedCoordinates(gameTime);
+                    }
+                }
+
+                entity.Update(gameTime);
+            }
         }
     }
 }

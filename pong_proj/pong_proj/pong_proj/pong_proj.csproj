@@ -68,6 +68,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\Wall.cs" />
+    <Compile Include="GameStateManager.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Space_Pong.cs" />
