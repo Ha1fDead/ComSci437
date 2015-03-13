@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using pong_proj.Screens;
+using Microsoft.Kinect;
 
 namespace pong_proj
 {
@@ -22,6 +23,8 @@ namespace pong_proj
         SpriteBatch spriteBatch;
         Texture2D background;
         SpriteFont Font;
+
+        KinectControls kinectControls;
 
         List<IEntity2D> entities;
         List<Player> players;
@@ -55,6 +58,11 @@ namespace pong_proj
             entities = new List<IEntity2D>();
             players = new List<Player>();
             state = new GameStateManager();
+
+            if (KinectSensor.KinectSensors.Count > 0)
+            {
+                kinectControls = new KinectControls(this);
+            }
 
             base.Initialize();
         }
@@ -124,6 +132,10 @@ namespace pong_proj
         /// </summary>
         protected override void UnloadContent()
         {
+            if(kinectControls != null)
+            {
+                kinectControls.Unload();
+            }
             entities.Clear();
             Content.Unload();
         }
@@ -147,6 +159,10 @@ namespace pong_proj
             }
 
             state.Update(gameTime);
+            if(kinectControls != null)
+            {
+                kinectControls.Update(gameTime);
+            }
 
             //Bad design, use OOD / Microsoft's GameStateManager code (which is awesome and well thought-out)
             switch (state.currentState)
@@ -231,6 +247,11 @@ namespace pong_proj
                         }
                     }
                 }
+            }
+
+            if(kinectControls != null)
+            {
+                kinectControls.Draw(gameTime, spriteBatch);
             }
 
             base.Draw(gameTime);
