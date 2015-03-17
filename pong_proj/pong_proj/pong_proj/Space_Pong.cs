@@ -86,12 +86,12 @@ namespace pong_proj
             Vector2 player1pos = new Vector2(playerTexture.Width*2, horizontalTexture.Height);
             Vector2 player2pos = new Vector2(SCREEN_WIDTH - (playerTexture.Width*3), horizontalTexture.Height);
 
-            var player1 = new Player(PlayerIndex.One, Font);
+            var player1 = new Player(PlayerIndex.One, Font, kinectControls);
             player1.Initialize(playerTexture, player1pos, new Vector2(0f, 0f), true);
             entities.Add(player1);
             players.Add(player1);
 
-            var player2 = new Player(PlayerIndex.Two, Font);
+            var player2 = new Player(PlayerIndex.Two, Font, kinectControls);
             player2.Initialize(playerTexture, player2pos, new Vector2(0f, 0f), true);
             entities.Add(player2);
             players.Add(player2);

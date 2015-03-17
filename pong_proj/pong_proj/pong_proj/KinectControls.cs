@@ -23,11 +23,28 @@ namespace pong_proj
         List<ColoredPoint> skeletonPoints;
 
         Skeleton[] skeletons;
+        Skeleton trackedSkeletonOne;
+        Skeleton trackedSkeletonTwo;
+
+        public bool IsTrackingOne
+        {
+            get
+            {
+                return (trackedSkeletonOne != null);
+            }
+        }
+
+        public bool IsTrackingTwo
+        {
+            get
+            {
+                return (trackedSkeletonTwo != null);
+            }
+        }
 
         KinectDraw drawState = KinectDraw.None;
 
         bool drawSkeleton = false;
-        int trackedPeople;
 
         public KinectControls(Game game)
         {
@@ -42,8 +59,6 @@ namespace pong_proj
                 kinectSensor.Stop();
             }
 
-            trackedPeople = 0;
-
             //enable video data with color
             kinectSensor.ColorStream.Enable();
 
@@ -52,6 +67,11 @@ namespace pong_proj
 
             //enable skeletal data
             kinectSensor.SkeletonStream.Enable();
+
+            if (!this.kinectSensor.SkeletonStream.AppChoosesSkeletons)
+            {
+                this.kinectSensor.SkeletonStream.AppChoosesSkeletons = true; // Ensure AppChoosesSkeletons is set
+            }
 
             //event handler that fires when the kinect sensor has new color frames ready
             //kinectSensor.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(kinect_ColorFrameReady);
@@ -62,12 +82,52 @@ namespace pong_proj
             depthVideo = new Texture2D(game.GraphicsDevice, kinectSensor.DepthStream.FrameWidth, kinectSensor.DepthStream.FrameHeight);
 
             kinectSensor.Start();
+
             kinectSensor.ElevationAngle = 15;
         }
 
         public void Unload()
         {
             kinectSensor.Stop();
+        }
+
+        private void TrackClosestSkeleton()
+        {
+            if (this.kinectSensor != null && this.kinectSensor.SkeletonStream != null && this.skeletons != null)
+            {
+                float closestDistance = 10000f; // Start with a far enough distance
+                int closestId = 0;
+                int secondClosestId = 0;
+
+                foreach (Skeleton skeleton in this.skeletons.Where(s => s.TrackingState != SkeletonTrackingState.NotTracked))
+                {
+                    if (skeleton.Position.Z < closestDistance)
+                    {
+                        trackedSkeletonTwo = trackedSkeletonOne;
+                        trackedSkeletonOne = skeleton;
+
+                        secondClosestId = closestId;
+                        closestId = skeleton.TrackingId;
+                        closestDistance = skeleton.Position.Z;
+                    }
+                }
+
+                if (closestId > 0)
+                {
+                    if(secondClosestId > 0)
+                    {
+                        this.kinectSensor.SkeletonStream.ChooseSkeletons(closestId, secondClosestId); // Track the two closest skeletons
+                    }
+                    else
+                    {
+                        this.kinectSensor.SkeletonStream.ChooseSkeletons(closestId); // only one close skeleton was found
+                    }
+                }
+                else
+                {
+                    this.kinectSensor.SkeletonStream.ChooseSkeletons(); // no valid skeletons were found
+                }
+            }
         }
 
 
@@ -120,13 +180,14 @@ namespace pong_proj
                 {
                     skeletonPoints = new List<ColoredPoint>();
                     frame.CopySkeletonDataTo(this.skeletons);
-                    trackedPeople = 0;
+
+                    //refresh the closest skeletons
+                    this.TrackClosestSkeleton();
+
                     foreach (var body in skeletons)
                     {
                         if (body != null && body.TrackingState == SkeletonTrackingState.Tracked)
                         {
-                            trackedPeople++;
-
                             foreach (Joint joint in body.Joints)
                             {
                                 SkeletonPoint skeletonPoint = joint.Position;
@@ -154,13 +215,26 @@ namespace pong_proj
 
                                 Color colorToAdd;
 
-                                if(trackedPeople == 1)
+                                if(trackedSkeletonOne != null)
                                 {
-                                    colorToAdd = Color.Red;
+                                    if (body.TrackingId == trackedSkeletonOne.TrackingId)
+                                    {
+                                        colorToAdd = Color.Red;
+                                    }
+                                    else if(body.TrackingId == trackedSkeletonTwo.TrackingId)
+                                    {
+                                        colorToAdd = Color.Blue;
+                                    }
+                                    else
+                                    {
+                                        //something obnoxious
+                                        colorToAdd = Color.HotPink;
+                                    }
                                 }
                                 else
                                 {
-                                    colorToAdd = Color.Blue;
+                                    //something obnoxious
+                                    colorToAdd = Color.HotPink;
                                 }
 
                                 skeletonPoints.Add(new ColoredPoint(point, colorToAdd));
@@ -169,6 +243,64 @@ namespace pong_proj
                         }
                     }
                 }
+            }
+        }
+
+        public bool IsLeftMoveUp(PlayerIndex playerIndex)
+        {
+            Skeleton currentSkeleton;
+            if(playerIndex == PlayerIndex.One)
+            {
+                currentSkeleton = trackedSkeletonOne;
+            }
+            else
+            {
+                currentSkeleton = trackedSkeletonTwo;
+            }
+
+            Joint leftHand = currentSkeleton.Joints.First(x => x.JointType == JointType.HandLeft);
+
+            if(leftHand.Position.Y < 0.0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool IsRightMoveUp(PlayerIndex playerIndex)
+        {
+            Skeleton currentSkeleton;
+            if (playerIndex == PlayerIndex.One)
+            {
+                if(!this.IsTrackingOne)
+                {
+                    return false;
+                }
+
+                currentSkeleton = trackedSkeletonOne;
+            }
+            else
+            {
+                if(!this.IsTrackingTwo)
+                {
+                    return false;
+                }
+
+                currentSkeleton = trackedSkeletonTwo;
+            }
+
+            Joint rightHand = currentSkeleton.Joints.First(x => x.JointType == JointType.HandRight);
+
+            if (rightHand.Position.Y < 0.0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 

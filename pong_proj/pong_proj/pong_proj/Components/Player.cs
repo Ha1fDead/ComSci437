@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Kinect;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -30,6 +31,8 @@ namespace pong_proj
         /// </summary>
         public int Score { get; private set; }
 
+        protected KinectControls _kinectControls;
+
         /// <summary>
         /// Holds the font used to render the player score
         /// 
@@ -37,8 +40,13 @@ namespace pong_proj
         /// </summary>
         private SpriteFont _font;
 
-        public Player(PlayerIndex number, SpriteFont font)
+        public Player(PlayerIndex number, SpriteFont font, KinectControls kinectControls=null)
         {
+            if(kinectControls != null)
+            {
+                _kinectControls = kinectControls;
+            }
+
             this.ActorNumber = number;
             this.Score = 0;
             this._font = font;
@@ -121,6 +129,18 @@ namespace pong_proj
                 return true;
             }
 
+            if(_kinectControls != null)
+            {
+                if(!_kinectControls.IsLeftMoveUp(this.ActorNumber) && _kinectControls.IsRightMoveUp(this.ActorNumber))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             return false;
         }
 
@@ -144,6 +164,19 @@ namespace pong_proj
             {
                 return true;
             }
+
+            if (_kinectControls != null)
+            {
+                if (_kinectControls.IsLeftMoveUp(this.ActorNumber) && !_kinectControls.IsRightMoveUp(this.ActorNumber))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             return false;
         }
 
